@@ -13,11 +13,12 @@ from google.oauth2 import service_account
 from google.protobuf.json_format import MessageToDict
 from homeassistant.components import conversation
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
-from homeassistant.core import HassJob, HomeAssistant
-from homeassistant.helpers import entity_registry as er, intent
+from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, SERVICE_RELOAD
+from homeassistant.core import HassJob, HomeAssistant, ServiceCall
+from homeassistant.helpers import entity_registry as er, intent, service
 from homeassistant.helpers.entityfilter import FILTER_SCHEMA
 from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers.reload import async_integration_yaml_config
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import ulid
 import voluptuous as vol
@@ -45,6 +46,23 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
+async def async_reload(hass: HomeAssistant, servie_call: ServiceCall) -> None:
+    """Handle reload service call."""
+    new_config = await async_integration_yaml_config(hass, DOMAIN)
+
+    if not new_config or DOMAIN not in new_config:
+        entity_filter = FILTER_SCHEMA({})
+    else:
+        conf = new_config[DOMAIN]
+        entity_filter = conf[CONF_FILTER]
+        hass.data[DOMAIN]["entity_filter"] = entity_filter
+
+    if (agent := hass.data[DOMAIN].get("agent")) is not None:
+        await agent.send_entities_to_dialogflow()
+
+    return
+
+
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Splunk component."""
     hass.data.setdefault(DOMAIN, {})
@@ -56,6 +74,16 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         entity_filter = FILTER_SCHEMA({})
 
     hass.data[DOMAIN]["entity_filter"] = entity_filter
+
+    async def _handle_reload(servie_call: ServiceCall) -> None:
+        return await async_reload(hass, servie_call)
+
+    service.async_register_admin_service(
+        hass,
+        DOMAIN,
+        SERVICE_RELOAD,
+        _handle_reload,
+    )
 
     return True
 
@@ -69,6 +97,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     key_file = conf.get(CONF_KEY_FILE)
 
     agent = DialogflowAgent(hass, key_file)
+    hass.data[DOMAIN]["agent"] = agent
     await agent.schedule_send_entities()
 
     hass.bus.async_listen_once(
