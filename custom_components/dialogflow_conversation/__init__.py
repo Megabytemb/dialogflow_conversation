@@ -272,6 +272,8 @@ class DialogflowAgent(conversation.AbstractConversationAgent):
             elif entity_entry.original_name is not None:
                 synonyms.append(entity_entry.original_name)
 
+            synonyms += entity_entry.aliases
+
             entity = dialogflow_v2.EntityType.Entity(
                 value=entity_entry.entity_id,
                 synonyms=synonyms,
