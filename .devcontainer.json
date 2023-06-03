@@ -1,16 +1,10 @@
 {
-    "name": "ludeeus/integration_blueprint",
+    "name": "Dialogflow Conversation Custom Component",
     "image": "mcr.microsoft.com/vscode/devcontainers/python:0-3.10-bullseye",
     "postCreateCommand": "scripts/setup",
-    "forwardPorts": [
-        8123
+    "appPort": [
+        "9123:8123"
     ],
-    "portsAttributes": {
-        "8123": {
-            "label": "Home Assistant",
-            "onAutoForward": "notify"
-        }
-    },
     "customizations": {
         "vscode": {
             "extensions": [

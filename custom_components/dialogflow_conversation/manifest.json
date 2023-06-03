@@ -1,0 +1,15 @@
+{
+  "domain": "dialogflow_conversation",
+  "name": "Dialogflow Conversation",
+  "codeowners": [
+    "@megabytemb"
+  ],
+  "requirements": [
+    "google-cloud-dialogflow==2.21.0"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Megabytemb/dialogflow_conversation",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Megabytemb/dialogflow_conversation/issues",
+  "version": "0.0.0"
+}
