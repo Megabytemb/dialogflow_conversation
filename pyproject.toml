@@ -58,9 +58,6 @@ ignore = [
     "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
 ]
 
-[tool.ruff.pyupgrade]
-keep-runtime-typing = true
-
 [tool.ruff.mccabe]
 max-complexity = 25
 
