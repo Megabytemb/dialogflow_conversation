@@ -99,3 +99,5 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     conversation.async_set_agent(hass, entry, agent)
+
+    return True
