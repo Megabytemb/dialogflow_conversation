@@ -4,12 +4,12 @@
   "codeowners": [
     "@megabytemb"
   ],
-  "requirements": [
-    "google-cloud-dialogflow==2.21.0"
-  ],
   "config_flow": true,
   "documentation": "https://github.com/Megabytemb/dialogflow_conversation",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/Megabytemb/dialogflow_conversation/issues",
+  "requirements": [
+    "google-cloud-dialogflow==2.21.0"
+  ],
   "version": "0.0.0"
 }
