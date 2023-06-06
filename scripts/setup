@@ -7,3 +7,5 @@ cd "$(dirname "$0")/.."
 python3 -m pip install --requirement requirements.txt
 
 pre-commit install
+
+python3 -m pip install https://github.com/home-assistant/core/archive/dev.zip
