@@ -1,47 +1,73 @@
-# Notice
+# Dialogflow_Conversation
 
-The component and platforms in this repository are not meant to be used by a
-user, but as a "blueprint" that custom component developers can build
-upon, to make more awesome stuff.
+[![GitHub Release][releases-shield]][releases]
+[![GitHub Activity][commits-shield]][commits]
+[![License][license-shield]](LICENSE)
 
-HAVE FUN! 😎
+[![hacs][hacsbadge]][hacs]
 
-## Why?
+[![Discord][discord-shield]][discord]
+[![Community Forum][forum-shield]][forum]
 
-This is simple, by having custom_components look (README + structure) the same
-it is easier for developers to help each other and for users to start using them.
+The Dialogflow Conversation integration is a custom component for Home Assistant, providing a seamless bridge between your Home Assistant setup and the Dialogflow conversational AI platform by Google​​. It leverages the capabilities of Dialogflow to make your home smart devices more interactive and responsive to natural language commands.
 
-If you are a developer and you want to add things to this "blueprint" that you think more
-developers will have use for, please open a PR to add it :)
+**This integration will set up the following platforms.**
 
-## What?
+Platform | Description
+-- | --
+`conversation` | Used to connect the Home Assistant Assist pipeline to Dialogflow.
+`intent` | Intent recognition after dialogflow response.
 
-This repository contains multiple files, here is a overview:
+## Installation
 
-File | Purpose | Documentation
--- | -- | --
-`.devcontainer.json` | Used for development/testing with Visual Studio Code. | [Documentation](https://code.visualstudio.com/docs/remote/containers)
-`.github/ISSUE_TEMPLATE/*.yml` | Templates for the issue tracker | [Documentation](https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository)
-`.vscode/tasks.json` | Tasks for the devcontainer. | [Documentation](https://code.visualstudio.com/docs/editor/tasks)
-`custom_components/dialogflow_conversation/*` | Integration files, this is where everything happens. | [Documentation](https://developers.home-assistant.io/docs/creating_component_index)
-`CONTRIBUTING.md` | Guidelines on how to contribute. | [Documentation](https://help.github.com/en/github/building-a-strong-community/setting-guidelines-for-repository-contributors)
-`LICENSE` | The license file for the project. | [Documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository)
-`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions. | [Documentation](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax)
-`requirements.txt` | Python packages used for development/lint/testing this integration. | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+### Installation through HACS
+1. Go to the HACS page on your Home Assistant instance.
+2. Click on "Integrations".
+3. Click on the three dots in the top right corner and select "Custom repositories".
+4. Add https://github.com/Megabytemb/dialogflow_conversation as a custom repository and select "Integration" as the category.
+5. Click "Add".
+6. The dialogflow_conversation integration will now be available for installation in HACS.
 
-## How?
+### Manual installation
 
-1. Create a new repository in GitHub, using this repository as a template by clicking the "Use this template" button in the GitHub UI.
-1. Open your new repository in Visual Studio Code devcontainer (Preferably with the "`Dev Containers: Clone Repository in Named Container Volume...`" option).
-1. Rename all instances of the `dialogflow_conversation` to `custom_components/<your_integration_domain>` (e.g. `custom_components/awesome_integration`).
-1. Rename all instances of the `Dialogflow_Conversation` to `<Your Integration Name>` (e.g. `Awesome Integration`).
-1. Run the `scripts/develop` to start HA and test out your new integration.
+1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
+1. If you do not have a `custom_components` directory (folder) there, you need to create it.
+1. In the `custom_components` directory (folder) create a new folder called `dialogflow_conversation`.
+1. Download _all_ the files from the `custom_components/dialogflow_conversation/` directory (folder) in this repository.
+1. Place the files you downloaded in the new directory (folder) you created.
+1. Restart Home Assistant
+1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Dialogflow_Conversation"
 
-## Next steps
+## Configuration is done in the UI
 
-These are some next steps you may want to look into:
-- Add tests to your integration, [`pytest-homeassistant-custom-component`](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) can help you get started.
-- Add brand images (logo/icon) to https://github.com/home-assistant/brands.
-- Create your first release.
-- Share your integration on the [Home Assistant Forum](https://community.home-assistant.io/).
-- Submit your integration to the [HACS](https://hacs.xyz/docs/publish/start).
+In addition to the UI configuration, you can also customize which entities are synced to Dialogflow by defining filters in your configuration.yaml file. This can be done using the filter configuration option under the dialogflow_conversation domain.
+
+Here is an example of how to configure a filter:
+
+```
+dialogflow_conversation:
+  filter:
+    include_domains:
+      - input_boolean
+```
+
+Please note that the `filter` configuration uses the same format as Home Assistant's entity filter configuration. You can include or exclude entities by domain, entity_id, or even by using glob patterns. For more details on the filter configuration, you can refer to the [Homekit integration documentation](https://www.home-assistant.io/integrations/homekit/#manual-configuration) on the Home Assistant website.
+
+## Contributions are welcome!
+
+If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
+
+***
+
+[dialogflow_conversation]: https://github.com/Megabytemb/dialogflow_conversation
+[commits-shield]: https://img.shields.io/github/commit-activity/y/Megabytemb/dialogflow_conversation.svg?style=for-the-badge
+[commits]: https://github.com/Megabytemb/dialogflow_conversation/commits/main
+[hacs]: https://github.com/hacs/integration
+[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[discord]: https://discord.gg/Qa5fW2R
+[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
+[forum]: https://community.home-assistant.io/
+[license-shield]: https://img.shields.io/github/license/Megabytemb/dialogflow_conversation.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/Megabytemb/dialogflow_conversation.svg?style=for-the-badge
+[releases]: https://github.com/Megabytemb/dialogflow_conversation/releases
