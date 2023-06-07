@@ -49,17 +49,30 @@ class DialogflowAgent(conversation.AbstractConversationAgent):
 
         _LOGGER.info(f"Sending text to dialogflow: {text}")
 
-        intent_resp, params = await self.df_client.detect_intent(
+        df_result = await self.df_client.detect_intent(
             text=text,
             language_code=language_code,
             conversation_id=conversation_id,
         )
 
-        _LOGGER.info(f"Got this intent pack: {intent_resp}")
+        query_result = df_result["queryResult"]
+
+        if "fulfillmentText" in query_result:
+            intent_response = _make_text_response(
+                language_code, query_result["fulfillmentText"], conversation_id
+            )
+            return conversation.ConversationResult(
+                response=intent_response, conversation_id=conversation_id
+            )
+
+        params = query_result["parameters"]
+        action = query_result["action"]
+
+        _LOGGER.info(f"Got this intent pack: {action}")
 
         intent_response = await self._handle_intent(
             user_input,
-            intent_resp,
+            action,
             params,
             conversation_id=conversation_id,
         )
@@ -84,13 +97,19 @@ class DialogflowAgent(conversation.AbstractConversationAgent):
                 language,
                 assistant=DOMAIN,
             )
+        except intent.UnknownIntent:
+            _LOGGER.exception("Unknown Intent error")
+            return _make_error_result(
+                language,
+                intent.IntentResponseErrorCode.FAILED_TO_HANDLE,
+                f"intent '{intent_type}' is not defined in Home Assistant",
+            )
         except intent.IntentHandleError:
             _LOGGER.exception("Intent handling error")
             return _make_error_result(
                 language,
                 intent.IntentResponseErrorCode.FAILED_TO_HANDLE,
                 "Intent handling error",
-                conversation_id,
             )
         except intent.IntentUnexpectedError:
             _LOGGER.exception("Unexpected intent error")
@@ -98,7 +117,6 @@ class DialogflowAgent(conversation.AbstractConversationAgent):
                 language,
                 intent.IntentResponseErrorCode.UNKNOWN,
                 "Unexpected intent error",
-                conversation_id,
             )
 
         return intent_response
@@ -153,10 +171,18 @@ def _make_error_result(
     language: str,
     error_code: intent.IntentResponseErrorCode,
     response_text: str,
-    conversation_id: str | None = None,
-) -> conversation.ConversationResult:
+) -> intent.IntentResponse:
     """Create conversation result with error code and text."""
     response = intent.IntentResponse(language=language)
     response.async_set_error(error_code, response_text)
+
+    return response
+
+
+def _make_text_response(
+    language: str, response_text: str, conversation_id: str | None = None
+) -> intent.IntentResponse:
+    response = intent.IntentResponse(language=language)
+    response.async_set_speech(response_text)
 
     return conversation.ConversationResult(response, conversation_id)

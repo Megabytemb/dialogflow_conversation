@@ -52,13 +52,7 @@ class DialogFlow:
         response = await self.session_client.detect_intent(request)
         resp_dict = MessageToDict(response._pb)
 
-        params = resp_dict["queryResult"]["parameters"]
-        action = resp_dict["queryResult"]["action"]
-
-        _LOGGER.info("Detected intent: %s", action)
-        _LOGGER.debug("Intent parameters: %s", params)
-
-        return action, params
+        return resp_dict
 
     async def get_entitytype_by_name(self, entity_name: str):
         """Retrieve the entity type with the specified name from DialogFlow."""
