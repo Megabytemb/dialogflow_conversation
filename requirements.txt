@@ -1,6 +1,6 @@
 colorlog==6.7.0
 homeassistant==2023.5.4
-pip>=21.0,<23.2
+pip>=21.0,<23.4
 ruff==0.0.287
 pre-commit>=2.11.1
 google-cloud-dialogflow==2.25.0
